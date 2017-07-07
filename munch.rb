@@ -37,7 +37,7 @@ class Munch
   def print_rowcount
     puts @rowcount.to_s
   end
-  
+
   def rowcount
     @rowcount.to_s
   end
@@ -106,7 +106,7 @@ end
 a = Munch.new(5, 6)
 
 wins = 1
-while a.next! do 
+while a.next! do
   if a.wins?
     puts "Winning pattern \#" + wins.to_s + "."
     a.print
@@ -130,10 +130,10 @@ while a.next! do
 end
 puts count
 =end
-  
+
 =begin
 while a.next! do
-  if a.wins? 
+  if a.wins?
     puts a.rowcount + ','
   else
     puts a.rowcount + a.moves
@@ -145,7 +145,7 @@ end
 while a.next! do
   puts "Pattern \#" + a.num_nexts.to_s + "."
   a.print
-  if a.wins? 
+  if a.wins?
     puts "No winning moves."
   else
     mm = a.moves
