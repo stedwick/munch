@@ -1,0 +1,13 @@
+Orchard Munch audio credits
+Quiet Orchard, board fire, and victory fireworks were made with ElevenLabs.
+
+Freesound recordings, edited and mixed under CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+Apple bite and paper rustle by Anthousai: https://freesound.org/people/Anthousai/sounds/398755/ and https://freesound.org/people/Anthousai/sounds/398896/
+Second apple bite by wadaltmon: https://freesound.org/people/wadaltmon/sounds/275015/
+Wood taps by Mrguff and altfuture: https://freesound.org/people/Mrguff/sounds/369710/ and https://freesound.org/people/altfuture/sounds/174635/
+Match strike by cookies+policy: https://freesound.org/people/cookies%2Bpolicy/sounds/556213/
+
+Win and loss use Salamander Grand Piano v3 by Alexander Holm.
+Source: https://github.com/sfzinstruments/SalamanderGrandPiano
+CC BY 3.0: https://creativecommons.org/licenses/by/3.0/
+Samples were trimmed, retuned, filtered and mixed into two-note cues.

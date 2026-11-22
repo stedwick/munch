@@ -1,320 +1,131 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
-<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
-<style type="text/css">
-
-body {
-	background-color: #D3D3D3;
-}
-
-div {
-	position: absolute;
-}
-
-#master {
-	z-index: 1;
-	margin-left: -300px;
-	margin-top: -250px;
-	left: 50%;
-	top: 50%;
-	height: 500px;
-	width: 600px;
-}
-
-#master-background {
-	background-image: url(images/background.png);
-	z-index: 0;
-	margin-left: -330px;
-	margin-top: -280px;
-	left: 50%;
-	top: 50%;
-	height: 560px;
-	width: 660px;
-}
-
-.apple {
-	height: 100px;
-	width: 100px;
-	z-index: 2;
-	cursor: pointer;
-}
-
-.turn {
-	margin-left: 330px;
-	margin-top: -250px;
-	left: 50%;
-	top: 50%;
-	width: 100px;
-}
-
-#challenge {
-	margin-left: -300px;
-	left: 50%;
-	margin-bottom: 280px;
-	bottom: 50%;
-	width: 600px;
-}
-
-#credits {
-	margin-left: -300px;
-	left: 50%;
-	margin-top: 280px;
-	top: 50%;
-	width: 600px;
-}
-
-#title {
-	margin-right: 330px;
-	right: 50%;
-	margin-top: -250px;
-	top: 50%;
-	height: 500px;
-}
-
-#rules {
-	margin-left: 330px;
-	margin-bottom: -250px;
-	left: 50%;
-	bottom: 50%;
-	width: 100px;
-}
-
-#reset {
-	margin-right: 330px;
-	margin-bottom: -250px;
-	right: 50%;
-	bottom: 50%;
-	width: 100px;
-	text-align: right;
-	color: red;
-	cursor: pointer;
-}
-
-.popup {
-	border-color: #007fff;
-	border-style: solid;
-	border-width: 3px;
-	right: 0px;
-	bottom: 0px;
-	width: 200px;
-	background-color: white;
-	z-index: 1000000;
-	padding: 5px;
-}
-
-</style>
-<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript">
-
-var rowcount = [6,6,6,6,6];
-
-var winners = ["10000","21000","22100","22210","22221","31100","32000","33110","33211","33322","41110","42111","42200","43000","44222","44311","51111","52110","53200","53320","54000","55220","55300","62211","62220","63111","63300","64200","64332","64433","65000","66333","66432","66542","66652"];
-
-function highlight (r, c, hl, f) {
-	for (i=r; i<5; i++) {
-		if (f) {
-			rowcount[i] = Math.min(rowcount[i], c);
-		};
-		for (j=c; j<6; j++) {
-			if (f) {
-				$("#"+i+""+j).css("background-color", hl).fadeOut();
-			}
-			else {
-				$("#"+i+""+j).css("background-color", hl);
-			};
-		};
-	};
-};
-
-function goComputer () {
-	if (rowcount.join('') == "00000") {
-		$("#lose").show();
-		$("#reset").fadeIn();
-		return false;
-	};
-
-	var winmoves = [];
-	var losemoves = [0,0];
-	var losesum = 0;
-
-	for (r=0; r<5; r++) {
-		for (c=0; c<6; c++) {
-			var temprowcount = rowcount.slice(0);
-			for (i=r; i<5; i++) {
-				temprowcount[i] = Math.min(rowcount[i], c);
-			};
-			var move = temprowcount.join('');
-			if (move == rowcount.join('')) {
-				continue;
-			};
-
-			var win = false;
-			for (i=0; i<winners.length; i++) {
-				if (winners[i] == move) {
-					win = true;
-				};
-			};
-
-			if (win) {
-				winmoves.push(r);
-				winmoves.push(c);
-			}
-			else {
-				if ((r+c) == losesum) {
-					losemoves.push(r);
-					losemoves.push(c);
-				}
-				else if ((r+c) > losesum) {
-					losesum = r+c;
-					losemoves = [r, c];
-				};
-			};
-		};
-	};
-
-	if (winmoves.length > 0) {
-		x = Math.round(Math.random() * (winmoves.length/2 - 1)) * 2;
-		highlight(winmoves[x], winmoves[x+1], "gray", true);
-	}
-	else {
-		if (rowcount.join('') == "66333") {
-			if (Math.random() < .5) {
-				highlight(1, 4, "gray", true);
-			}
-			else {
-				highlight(4, 2, "gray", true);
-			};
-		}
-		else {
-			x = Math.round(Math.random() * (losemoves.length/2 - 1)) * 2;
-			highlight(losemoves[x], losemoves[x+1], "gray", true);
-		};
-	};
-
-	$("#human").show();
-	$("#computer").hide();
-	setTimeout("bindApple()", 1000);
-};
-
-function bindApple () {
-	if (rowcount.join('') == "00000") {
-		$("#win").show();
-		$("#reset").fadeIn();
-		return false;
-	};
-
-  var chrome = navigator.userAgent.indexOf('Chrome') > -1;
-	// if (!chrome) {
-	if (false) {
-		$(".apple").hover(function () {
-			var apple = $(this);
-			var r = apple.attr("id").charAt(0)*1;
-			var c = apple.attr("id").charAt(1)*1;
-
-			$(".apple").css("background-color", "#FFFFFF");
-
-			if (apple.attr("id") == "00") {
-				apple.html("<img src='images/apple-rglow.png' />");
-			}
-			else {
-				apple.html("<img src='images/apple-gglow.png' />");
-			};
-
-			highlight(r, c, "#73CEFF", false);
-
-			try {
-				if (old_apple.attr("id") == "00") {
-					old_apple.html("<img src='images/apple-red.png' />");
-				}
-				else {
-					old_apple.html("<img src='images/apple-green.png' />");
-				};
-			} catch(err) {}
-			window.old_apple = apple
-		}, function () {
-		});
-	}
-
-	$("#master").on("click", ".apple", function () {
-		var apple = $(this);
-		var r = apple.attr("id").charAt(0)*1;
-		var c = apple.attr("id").charAt(1)*1;
-
-		if (r+c != 0) {
-			$("#human").hide();
-			$("#computer").show();
-		};
-
-		$("#master").unbind();
-		highlight(r, c, "yellow", true);
-		setTimeout("goComputer()", 1000);
-	});
-};
-
-function setupBoard () {
-	$("#master").html("&nbsp;");
-	$("#win").hide();
-	$("#lose").hide();
-	$("#computer").hide();
-	$("#human").show();
-	$("#reset").hide();
-	$("#rules-more").hide();
-
-	$("#link-rules-more").click(function () {
-		$("#rules-more").show();
-	});
-
-	$("#link-rules-close").click(function () {
-		$("#rules-more").hide();
-	});
-
-	rowcount = [6,6,6,6,6];
-
-	for (r=0; r<5; r++) {
-		for (c=0; c<6; c++) {
-			$("#master").append("<div class='apple' id='"+r+c+"' style='left: "+(100*c)+"px; top: "+(100*r)+"px;'><img src='images/apple-green.png' /></div>");
-		};
-	};
-	$("#00").html("<img src='images/apple-red.png' />");
-
-	bindApple();
-};
-
-$(function () {
-	setupBoard();
-
-	$("#reset").click(function () {
-		setupBoard();
-	});
-});
-
-</script>
-<title>Munch 5x6</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e7edcf">
+  <title>Orchard Munch</title>
+  <meta name="description" content="Can you beat the computer? Take turns eating apples in this quiet puzzle. Whoever eats the poison apple loses.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Orchard Munch">
+  <meta property="og:description" content="Can you beat the computer? Take turns eating apples in this quiet puzzle. Whoever eats the poison apple loses.">
+  <meta property="og:url" content="https://stedwick.github.io/munch/">
+  <meta property="og:image" content="https://stedwick.github.io/munch/assets/orchard-munch-share.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Orchard Munch title beside a wooden board full of green apples and one red poison apple, set in a sunlit orchard.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Orchard Munch">
+  <meta name="twitter:description" content="Can you beat the computer? Take turns eating apples in this quiet puzzle. Whoever eats the poison apple loses.">
+  <meta name="twitter:image" content="https://stedwick.github.io/munch/assets/orchard-munch-share.jpg">
+  <meta name="twitter:image:alt" content="Orchard Munch title beside a wooden board full of green apples and one red poison apple, set in a sunlit orchard.">
+  <link rel="icon" href="assets/apple-green.png">
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="arcade.css?v=orchard-skyshow">
+  <script src="shared/core.js" defer></script>
+  <script src="orchard-audio.js?v=orchard-classic-fire" defer></script>
+  <script src="shared/game.js?v=orchard-turn-sync" defer></script>
+  <script src="fireworks.js?v=orchard-skyshow-mobile" defer></script>
+  <script src="arcade.js?v=orchard-skyshow" defer></script>
 </head>
 <body>
+  <main class="scene">
+    <div class="orchard-light" aria-hidden="true"></div>
+    <div class="machine">
+      <header class="brand">
+        <span class="brand-top">Orchard</span>
+        <h1 aria-label="Orchard Munch">
+          <span aria-hidden="true">M</span><span aria-hidden="true">U</span><span aria-hidden="true">N</span><span aria-hidden="true">C</span><span aria-hidden="true">H</span>
+        </h1>
+        <span class="brand-size">5 × 6</span>
+      </header>
 
-<div id="master"></div>
+      <div class="sign">
+        <span class="sign-rays" aria-hidden="true"><i></i><i></i><i></i></span>
+        <p data-challenge>Can you beat the computer?</p>
+        <span class="sign-rays" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
 
-<div id="master-background"></div>
+      <div class="console">
+        <div class="bezel" aria-hidden="true">
+          <i></i><i></i><i></i><i></i>
+        </div>
+        <div class="board" data-board data-sync-bite role="group" aria-label="Apple board, five rows by six columns" aria-describedby="quick-rule"></div>
+        <div class="effects" aria-hidden="true"></div>
+        <div class="result">
+          <div class="ticket-paper">
+            <p class="ticket-header">
+              <span class="ticket-stamp" aria-hidden="true">
+                <span class="ticket-leaf"></span>
+                <span class="ticket-eyes"></span>
+                <span class="ticket-mouth"></span>
+              </span>
+              Round ticket
+            </p>
+            <p class="result-title" data-result-title></p>
+            <p class="ticket-detail" data-detail data-won="The computer ate the poison apple." data-lost="You ate the poison apple."></p>
+          </div>
+          <div class="ticket-stub">
+            <button class="replay" type="button" data-reset>Play again <span aria-hidden="true">↻</span></button>
+          </div>
+        </div>
+        <noscript>Turn on JavaScript to play Munch.</noscript>
+      </div>
 
-<div class="turn" id="human"><img src="images/human.png" /><br /><center>It's your turn.</center></div>
+      <aside class="station" aria-label="Turn and rules">
+        <div class="turn-unit">
+          <div class="lamps" aria-hidden="true">
+            <span class="lamp lamp-you">You</span><span class="lamp lamp-computer">Computer</span>
+          </div>
+          <div class="turn-copy" aria-live="polite" aria-atomic="true">
+            <p class="turn-title" data-status data-human="Your turn" data-computer="Computer’s turn" data-poison="Poison bite!" data-won="Round over" data-lost="Round over">Your turn</p>
+            <p class="turn-detail" data-detail data-start="Pick an apple." data-won="You win." data-lost="The computer wins.">Pick an apple.</p>
+          </div>
+          <div class="meter"><span data-remaining>30</span><span data-remaining-label>apples left</span></div>
+          <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+            <span>Dark mode</span><span class="theme-track" aria-hidden="true"></span>
+          </button>
+        </div>
 
-<div class="turn" id="computer"><img src="images/computer.png" /><br /><center>The computer is thinking.</center></div>
+        <section class="rules" aria-labelledby="rules-title">
+          <div class="rules-heading">
+            <h2 id="rules-title">How to play</h2>
+            <div class="rule-diagram" aria-hidden="true">
+              <i></i><i></i><i></i><i></i><i class="origin"></i><i class="bite"></i><i></i><i class="bite"></i><i class="bite"></i>
+            </div>
+          </div>
+          <p id="quick-rule">Choose an apple to eat it, along with all the apples below and to the right of it.</p>
+          <p class="poison-rule"><span aria-hidden="true">×</span> Whoever eats the poison apple loses.</p>
+          <button type="button" class="more" data-rules-open aria-haspopup="dialog" aria-controls="full-rules">More</button>
+        </section>
+      </aside>
 
-<div id="credits"><center>Created by <a href="http://www.philipbrocoum.com">Philip Brocoum</a>. Site made with <a href="http://www.jquery.com">jQuery</a>. Perfect strategy calculated using <a href="http://tryruby.org/">Ruby</a>.</center></div>
+      <div class="controls">
+        <span class="preview" data-preview-count aria-hidden="true"></span>
+        <button type="button" data-reset>
+          <span aria-hidden="true">↻</span> Restart
+        </button>
+        <button type="button" data-sound aria-label="Music and sound effects">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9v6h4l5 4V5L7 9H3z"></path><path class="sound-wave" d="M16 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"></path><path class="sound-off" d="m16 10 5 5m0-5-5 5"></path>
+          </svg>
+          <span data-sound-label>Sound off</span>
+        </button>
+      </div>
 
-<div id="title"><center><h1>M<br />U<br />N<br />C<br />H<br /></h1>5x6</center></div>
+      <footer>Original game by <a href="https://phils.app" target="_blank" rel="noopener noreferrer">Philip Brocoum</a></footer>
+    </div>
+  </main>
 
-<div id="rules"><b>Rules: </b><br />Whoever eats the poison apple loses.<br /><br /><a href="#" id="link-rules-more">More...</a></div>
-<div id="rules-more" class="popup"><div id="link-rules-close" style="color: red; text-align: right; background-color: #b5e8ff; width: 200px; cursor: pointer;">Close [X]&nbsp;</div><br /><b>Rules: </b><br />Players take turns eating apples by choosing an apple and then eating it, along with all the apples below and to the right of it. The blue highlight will show you which apples will be eaten. In this manner, players "munch" away at the board. This is where the game gets its name. Players must eat at least one apple during their turn. Whoever eats the poison apple, the red apple in the upper left-hand corner, loses.<br /><br />FYI: The first player always wins (ie. the human), so long as s/he plays perfectly. So, don't accuse the computer of cheating.</div>
-
-<div id="challenge"><center>Can you beat the computer?</center></div>
-
-<img id="win" src="images/win.png" style="z-index: 1000; position: absolute; top: 50%; left: 50%; margin-top: -64px; margin-left: -64px;" />
-<img id="lose" src="images/lose.png" style="z-index: 1000; position: absolute; top: 50%; left: 50%; margin-top: -64px; margin-left: -64px;" />
-
-<div id="reset">Play again.</div>
-
+  <dialog id="full-rules" aria-labelledby="full-rules-title">
+    <div class="rules-page">
+      <h2 id="full-rules-title">How to play Munch</h2>
+      <p>Players take turns eating apples by choosing an apple and then eating it, along with all the apples below and to the right of it. The highlight shows you which apples will be eaten.</p>
+      <p>In this manner, players “munch” away at the board. This is where the game gets its name. Players must eat at least one apple during their turn. Whoever eats the poison apple, the red apple in the upper left-hand corner, loses.</p>
+      <p>The first player always wins (that’s you), as long as they play perfectly. So don’t accuse the computer of cheating.</p>
+      <form method="dialog"><button class="more" type="submit" autofocus>Back to the game</button></form>
+    </div>
+  </dialog>
 </body>
 </html>
